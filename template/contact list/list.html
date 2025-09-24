@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Contact</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin:0; padding:30px; background: linear-gradient(120deg, #dbeafe, #93c5fd, #60a5fa, #a5b4fc); background-size: 400% 400%; animation: gradientShift 18s ease infinite; }
+        @keyframes gradientShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+        .container { max-width: 900px; margin: 0 auto; background:#fff; padding:24px; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.08); }
+        h1 { margin:0 0 16px; }
+        .top { display:flex; gap:12px; align-items:center; justify-content:space-between; margin-bottom:16px; }
+        .top form { display:flex; gap:8px; }
+        input[type="text"] { padding:10px 12px; border:1px solid #dcdfe6; border-radius:8px; }
+        .btn { padding:10px 14px; border:none; border-radius:8px; background:#4f46e5; color:#fff; cursor:pointer; text-decoration:none; }
+        .btn:hover { background:#4338ca; }
+        table { width:100%; border-collapse:collapse; }
+        th, td { padding:10px; border-bottom:1px solid #f0f2f5; text-align:left; }
+        .muted{ color:#6b7280; }
+        a { color:#4f46e5; text-decoration:none; }
+        /* modal */
+        .modal { position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.45); }
+        .modal.open { display:flex; }
+        .modal-card { background:#fff; padding:20px; border-radius:10px; width: 360px; box-shadow:0 10px 30px rgba(0,0,0,0.2); }
+        .modal-actions { display:flex; gap:8px; margin-top:14px; justify-content:flex-end; }
+        .btn-danger { background:#ef4444; }
+        .btn-secondary { background:#6b7280; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>My Contact</h1>
+        <div class="top">
+            <a class="btn" href="/contacts/new">Add Contact</a>
+            <form method="get" action="/contacts">
+                <input type="text" name="q" value="{{ q }}" placeholder="Search by name or phone" />
+                <button class="btn" type="submit">Search</button>
+            </form>
+        </div>
+
+        {% if not contacts %}
+            <p class="muted">No contacts yet.</p>
+        {% else %}
+            <table>
+                <thead>
+                    <tr><th>Name</th><th>Phone</th><th>Actions</th></tr>
+                </thead>
+                <tbody>
+                    {% for c in contacts %}
+                    <tr>
+                        <td><a href="/contacts/{{ c.id }}">{{ c.name }}</a></td>
+                        <td>{{ c.phone }}</td>
+                        <td>
+                            <a href="/contacts/{{ c.id }}">View</a> |
+                            <a href="/contacts/{{ c.id }}/edit">Edit</a> |
+                            <button class="btn btn-danger" type="button" onclick="openConfirm('/contacts/{{ c.id }}/delete')">Delete</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+        <p class="muted" style="margin-top:12px"><a href="/">Home</a></p>
+    </div>
+
+    <!-- Delete confirmation modal -->
+    <div id="confirmModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+        <div class="modal-card">
+            <h3 id="confirmTitle" style="margin-top:0">Delete contact?</h3>
+            <p class="muted">This action cannot be undone.</p>
+            <div class="modal-actions">
+                <form id="confirmForm" method="post" action="">
+                    <button class="btn btn-danger" type="submit">Confirm Delete</button>
+                </form>
+                <button class="btn btn-secondary" type="button" onclick="closeConfirm()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openConfirm(actionUrl){
+            var form = document.getElementById('confirmForm');
+            form.action = actionUrl;
+            document.getElementById('confirmModal').classList.add('open');
+        }
+        function closeConfirm(){
+            document.getElementById('confirmModal').classList.remove('open');
+        }
+        // Close on overlay click
+        document.getElementById('confirmModal').addEventListener('click', function(e){
+            if(e.target === this){ closeConfirm(); }
+        });
+        // Close on Escape
+        window.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ closeConfirm(); } });
+    </script>
+</body>
+</html>
+

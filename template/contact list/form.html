@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Contact - {{ 'Edit' if mode == 'edit' else 'Add' }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin:0; padding:30px; background: linear-gradient(120deg, #dbeafe, #93c5fd, #60a5fa, #a5b4fc); background-size: 400% 400%; animation: gradientShift 18s ease infinite; }
+        @keyframes gradientShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+        .container { max-width: 720px; margin: 0 auto; background:#fff; padding:24px; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.08); }
+        h1 { margin:0 0 16px; }
+        label { display:block; margin-top:12px; }
+        input, textarea { width:100%; padding:10px 12px; border:1px solid #dcdfe6; border-radius:8px; }
+        .error { color:#dc2626; font-size:13px; margin-top:4px; }
+        .row { display:flex; gap:10px; margin-top:16px; }
+        .btn { padding:10px 14px; border:none; border-radius:8px; background:#4f46e5; color:#fff; cursor:pointer; text-decoration:none; }
+        .btn:hover { background:#4338ca; }
+        a { color:#4f46e5; text-decoration:none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>My Contact - {{ 'Edit' if mode == 'edit' else 'Add' }}</h1>
+        <form method="post" action="{{ '/contacts/' + values.id + '/update' if mode == 'edit' else '/contacts' }}">
+            <label>Name
+                <input type="text" name="name" value="{{ values.name }}" required>
+                {% if errors.name %}<div class="error">{{ errors.name }}</div>{% endif %}
+            </label>
+            <label>Phone
+                <input type="text" name="phone" value="{{ values.phone }}" required>
+                {% if errors.phone %}<div class="error">{{ errors.phone }}</div>{% endif %}
+            </label>
+            <label>Email
+                <input type="text" name="email" value="{{ values.email }}">
+                {% if errors.email %}<div class="error">{{ errors.email }}</div>{% endif %}
+            </label>
+            <label>Address
+                <textarea name="address" rows="3">{{ values.address }}</textarea>
+            </label>
+            <div class="row">
+                <button class="btn" type="submit">{{ 'Update' if mode == 'edit' else 'Create' }}</button>
+                <a class="btn" style="background:#6b7280" href="/contacts">Cancel</a>
+            </div>
+        </form>
+        <p style="margin-top:12px"><a href="/">Home</a></p>
+    </div>
+</body>
+</html>
+
